@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Links;
+use App\Helpers\BaseResponse;
 
 class LinksController extends Controller
 {
@@ -12,10 +13,8 @@ class LinksController extends Controller
      */
     public function index()
     {
-        Links::where('short_url', request('short_url'))->increment('views');
-
         $links = Links::all();
-        return response()->json($links);
+        return BaseResponse::success($links, 'Links retrieved successfully');
     }
 
     /**
@@ -33,9 +32,9 @@ class LinksController extends Controller
             'short_url' => $request->short_url,
             'original_url' => $request->original_url,
             'user_id' => $request->user_id,
-            'views' => 0
         ]);
-        return response()->json($link, 201);
+
+        return BaseResponse::success($link, 'Link created successfully');
     }
 
     /**
@@ -43,10 +42,14 @@ class LinksController extends Controller
      */
     public function show(string $id)
     {
-        Links::where('short_url', $id)->increment('views');
+        $link = Links::find($id);
 
-        $link = Links::where('short_url', $id)->first();
-        return response()->json($link, 200);
+        if (!$link) {
+            return BaseResponse::notFound('Link not found');
+        }
+
+        $link->increment('views');
+        return BaseResponse::success($link, 'Link retrieved successfully');
     }
 
     /**
@@ -54,9 +57,25 @@ class LinksController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $link = Links::where('short_url', $id)->first();
-        $link->update($request->all());
-        return response()->json($link, 200);
+        $request->validate([
+            'short_url' => 'required',
+            'original_url' => 'required|url',
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        $link = Links::find($id);
+
+        if (!$link) {
+            return BaseResponse::notFound('Link not found');
+        }
+
+        $link->update([
+            'short_url' => $request->short_url,
+            'original_url' => $request->original_url,
+            'user_id' => $request->user_id,
+        ]);
+
+        return BaseResponse::success($link, 'Link updated successfully');
     }
 
     /**
@@ -64,7 +83,13 @@ class LinksController extends Controller
      */
     public function destroy(string $id)
     {
-        Links::where('short_url', $id)->delete();
-        return response()->json(null, 204);
+        $link = Links::find($id);
+
+        if (!$link) {
+            return BaseResponse::notFound('Link not found');
+        }
+
+        $link->delete();
+        return BaseResponse::success(null, 'Link deleted successfully');
     }
 }
