@@ -22,6 +22,12 @@ class LinksController extends Controller
      */
     public function store(Request $request)
     {
+        $link = Links::where('short_url', $request->short_url)->first();
+
+        if ($link) {
+            return BaseResponse::badRequest('Short URL already exists');
+        }
+
         $request->validate([
             'short_url' => 'required',
             'original_url' => 'required|url',

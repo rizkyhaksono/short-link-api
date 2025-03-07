@@ -39,4 +39,13 @@ class BaseResponse
       'data' => null
     ], 401);
   }
+
+  public static function badRequest($message = 'Bad request')
+  {
+    return response()->json([
+      'success' => false,
+      'message' => $message,
+      'data' => null
+    ], 400);
+  }
 }
