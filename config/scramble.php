@@ -44,7 +44,7 @@ return [
         /*
          * Define the theme of the documentation. Available options are `light` and `dark`.
          */
-        'theme' => 'light',
+        'theme' => 'dark',
 
         /*
          * Hide the `Try It` feature. Enabled by default.
@@ -78,8 +78,8 @@ return [
      */
     'servers' => [
         'Local' => 'api',
-        'Dev' => 'https://api.link.natee.me/api',
-        'Prod' => 'https://api.link.natee.me/api',
+        'Dev' => 'https://api.link.natee.my.id/api',
+        'Prod' => 'https://api.link.natee.my.id/api',
     ],
 
     'middleware' => [

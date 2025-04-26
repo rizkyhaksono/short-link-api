@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('links', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('short_url')->unique();
             $table->integer('views')->default(0);
-            $table->foreignId('user_id')->constrained();
             $table->string('original_url');
             $table->timestamps();
         });

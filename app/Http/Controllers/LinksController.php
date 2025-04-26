@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Links;
 use App\Helpers\BaseResponse;
+use Illuminate\Support\Str;
 
 class LinksController extends Controller
 {
@@ -31,13 +32,11 @@ class LinksController extends Controller
         $request->validate([
             'short_url' => 'required',
             'original_url' => 'required|url',
-            'user_id' => 'required|exists:users,id'
         ]);
 
         $link = Links::create([
             'short_url' => $request->short_url,
             'original_url' => $request->original_url,
-            'user_id' => $request->user_id,
         ]);
 
         return BaseResponse::success($link, 'Link created successfully');
@@ -64,9 +63,8 @@ class LinksController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'short_url' => 'required',
+            'short_url' => 'required|unique:links,short_url,' . $id,
             'original_url' => 'required|url',
-            'user_id' => 'required|exists:users,id'
         ]);
 
         $link = Links::find($id);
@@ -78,7 +76,6 @@ class LinksController extends Controller
         $link->update([
             'short_url' => $request->short_url,
             'original_url' => $request->original_url,
-            'user_id' => $request->user_id,
         ]);
 
         return BaseResponse::success($link, 'Link updated successfully');
