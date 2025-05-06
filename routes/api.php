@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 
 Route::get('/links', [LinksController::class, 'index']);
 Route::get('/links/{id}', [LinksController::class, 'show']);
+Route::post('/links/search', [LinksController::class, 'search']);
 Route::post('/links', [LinksController::class, 'store']);
 
 Route::post('/register', [AuthController::class, 'register']);

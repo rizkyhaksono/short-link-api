@@ -43,6 +43,24 @@ class LinksController extends Controller
     }
 
     /**
+     * Search for a link by its short URL.
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'short_url' => 'required',
+        ]);
+
+        $link = Links::where('short_url', $request->short_url)->first();
+
+        if (!$link) {
+            return BaseResponse::notFound('Link not found');
+        }
+
+        return BaseResponse::success($link, 'Link retrieved successfully');
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(string $id)
